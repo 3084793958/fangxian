@@ -1,0 +1,5 @@
+linux:sudo apt-get install python3-pip
+pip3 install ursina
+python>=3.6
+windows:pip install ursina
+python>=3.6
