@@ -117,10 +117,16 @@ class tk(Entity):
             self.time=random.randint(12,17)
             self.look_at(player,axis='left')
             invoke(Audio, 'files/sound/fs.ogg')
-            PD(model="files/3d/hjd.obj",
+            if abs(self.x-player.x)<40 and abs(self.z-player.z)<40 :
+                PD(model="files/3d/hjd.obj",
                    scale=0.1,
-                   position=self.world_position+(0,3,0),
-                   rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.1),90,0))
+                   position=self.world_position+(0,2.5,0),
+                   rotation=self.world_rotation-(-55,90,0))
+            else:
+                PD(model="files/3d/hjd.obj",
+                   scale=0.1,
+                   position=self.world_position+(0,2.5,0),
+                   rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.1)+3,90,0))
             self.rotation_y = 180
         if self.time1<0:
             self.time1=0
@@ -134,7 +140,7 @@ class tk(Entity):
                 HJD(model="files/3d/hjd.obj",
                     scale=0.1,
                     position=self.world_position+(0, (random.randint(0, 20) / 10)+3, 0),
-                    rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.6), random.randint(-10, 10)+90, 0))
+                    rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.6)+10, random.randint(-10, 10)+90, 0))
             self.rotation_y = 0
         if player.life==0:
             destroy(self)
