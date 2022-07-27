@@ -16,8 +16,11 @@ class PD(Entity):
             if self.rotation_x < 90:
                 self.rotation_x+=0.1
         else:
-            self.world_position += self.forward * self.speed * time.dt * self.lifetime
-            help_position = self.world_position
+            self.world_position += self.forward * self.speed * time.dt
+            if self.y>3:
+                help_position = self.world_position-(0,2,0)
+            else:
+                help_position = self.world_position
             destroy(self)
             invoke(Audio, 'files/sound/boom.ogg')
             boom = Entity(model = 'cube',texture = 'files/image/boom.png',position = help_position)
@@ -36,8 +39,8 @@ class HJD(Entity):
             if self.rotation_x < 90:
                 self.rotation_x+=0.6
         else:
-            self.world_position += self.forward * self.speed * time.dt * self.lifetime
-            help_position = self.world_position + (0,3,0)
+            self.world_position += self.forward * self.speed * time.dt
+            help_position = self.world_position
             destroy(self)
             invoke(Audio, 'files/sound/boom.ogg')
             boom = Entity(model = 'cube',texture = 'files/image/boom.png',position = help_position)
@@ -90,6 +93,10 @@ class tk(Entity):
             if abs(self.z-pdpd.z)<17:
                 if abs(self.y-pdpd.y)<7:
                     self.life-=0.1
+        if abs(self.x-pdpd.x)<5:
+            if abs(self.z-pdpd.z)<5:
+                if abs(self.y-pdpd.y)<7:
+                    self.life-=0.2
         if abs(self.x-hjdpd.x)<11:
             if abs(self.z-hjdpd.z)<11:
                 if abs(self.y-hjdpd.y)<7:
@@ -98,6 +105,10 @@ class tk(Entity):
             if abs(self.z-hjdpd.z)<17:
                 if abs(self.y-hjdpd.y)<7:
                     self.life-=0.1
+        if abs(self.x-hjdpd.x)<5:
+            if abs(self.z-hjdpd.z)<5:
+                if abs(self.y-hjdpd.y)<7:
+                    self.life-=0.2
         if self.time<0:
             self.time=0
         if self.time>0:
@@ -159,7 +170,7 @@ def input(key):
                    rotation=tkdz.world_rotation-(random.randint(25,45),random.randint(-10,10),0))
     if key=="y" and ctk.z==0:
         invoke(Audio, 'files/sound/nb.ogg')
-        ctk.z=90
+        ctk.z=75
 def update():
     tkdz.position = player.world_position+(0,0.5,0)
     tkp.position = player.world_position+(0,1,0)
@@ -209,22 +220,30 @@ def update():
     player.speed=player.life
     if player.life<0:
         player.life=0
-    if abs(player.x-pdpd.x)<10:
-            if abs(player.z-pdpd.z)<10:
+    if abs(player.x-pdpd.x)<8:
+            if abs(player.z-pdpd.z)<8:
                 if abs(player.y-pdpd.y)<7:
                     player.life-=0.1
-    if abs(player.x-pdpd.x)<16:
-        if abs(player.z-pdpd.z)<16:
+    if abs(player.x-pdpd.x)<15:
+        if abs(player.z-pdpd.z)<15:
             if abs(player.y-pdpd.y)<7:
                 player.life-=0.1
-    if abs(player.x-hjdpd.x)<10:
-        if abs(player.z-hjdpd.z)<10:
+    if abs(player.x-pdpd.x)<5:
+        if abs(player.z-pdpd.z)<5:
+            if abs(player.y-pdpd.y)<7:
+                player.life-=0.2
+    if abs(player.x-hjdpd.x)<8:
+        if abs(player.z-hjdpd.z)<8:
             if abs(player.y-hjdpd.y)<7:
                 player.life-=0.1
-    if abs(player.x-hjdpd.x)<16:
-        if abs(player.z-hjdpd.z)<16:
+    if abs(player.x-hjdpd.x)<15:
+        if abs(player.z-hjdpd.z)<15:
             if abs(player.y-hjdpd.y)<7:
                 player.life-=0.1
+    if abs(player.x-hjdpd.x)<5:
+        if abs(player.z-hjdpd.z)<5:
+            if abs(player.y-hjdpd.y)<7:
+                player.life-=0.2
     if lifefz.z!=0:
         lifefz.z-=0.01
     if lifefz.z<0:
