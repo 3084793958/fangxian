@@ -16,7 +16,7 @@ class PD(Entity):
             if self.rotation_x < 90:
                 self.rotation_x+=0.1
         else:
-            self.world_position += self.forward * self.speed * time.dt
+            self.world_position += self.forward * self.speed * time.dt * self.lifetime
             help_position = self.world_position
             destroy(self)
             invoke(Audio, 'files/sound/boom.ogg')
@@ -36,8 +36,8 @@ class HJD(Entity):
             if self.rotation_x < 90:
                 self.rotation_x+=0.6
         else:
-            self.world_position += self.forward * self.speed * time.dt
-            help_position = self.world_position
+            self.world_position += self.forward * self.speed * time.dt * self.lifetime
+            help_position = self.world_position + (0,3,0)
             destroy(self)
             invoke(Audio, 'files/sound/boom.ogg')
             boom = Entity(model = 'cube',texture = 'files/image/boom.png',position = help_position)
@@ -109,7 +109,7 @@ class tk(Entity):
             PD(model="files/3d/hjd.obj",
                    scale=0.1,
                    position=self.world_position+(0,3,0),
-                   rotation=self.world_rotation-(random.randint(-1,10),90,0))
+                   rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.1),90,0))
             self.rotation_y = 180
         if self.time1<0:
             self.time1=0
@@ -123,7 +123,7 @@ class tk(Entity):
                 HJD(model="files/3d/hjd.obj",
                     scale=0.1,
                     position=self.world_position+(0, (random.randint(0, 20) / 10)+3, 0),
-                    rotation=self.world_rotation-(random.randint(25, 45), random.randint(-10, 10)+90, 0))
+                    rotation=self.world_rotation-((((pow((self.x-player.x)**2+(self.z-player.z)**2,0.5)/2)/36)*0.6), random.randint(-10, 10)+90, 0))
             self.rotation_y = 0
         if player.life==0:
             destroy(self)
@@ -209,20 +209,20 @@ def update():
     player.speed=player.life
     if player.life<0:
         player.life=0
-    if abs(player.x-pdpd.x)<7:
-            if abs(player.z-pdpd.z)<7:
+    if abs(player.x-pdpd.x)<10:
+            if abs(player.z-pdpd.z)<10:
                 if abs(player.y-pdpd.y)<7:
                     player.life-=0.1
-    if abs(player.x-pdpd.x)<10:
-        if abs(player.z-pdpd.z)<10:
+    if abs(player.x-pdpd.x)<16:
+        if abs(player.z-pdpd.z)<16:
             if abs(player.y-pdpd.y)<7:
-                player.life-=0.1
-    if abs(player.x-hjdpd.x)<7:
-        if abs(player.z-hjdpd.z)<7:
-            if abs(player.y-hjdpd.y)<7:
                 player.life-=0.1
     if abs(player.x-hjdpd.x)<10:
         if abs(player.z-hjdpd.z)<10:
+            if abs(player.y-hjdpd.y)<7:
+                player.life-=0.1
+    if abs(player.x-hjdpd.x)<16:
+        if abs(player.z-hjdpd.z)<16:
             if abs(player.y-hjdpd.y)<7:
                 player.life-=0.1
     if lifefz.z!=0:
@@ -246,6 +246,8 @@ def update():
         ctk.z=0
     if ctk.z!=0:
         ctk.z-=0.01
+    if int(player.life)==0:
+        player.life=0
 app = Ursina()
 Sky()
 player = FirstPersonController(speed=10,scale=2.5,life=10,jif=0)
