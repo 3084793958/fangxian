@@ -1,3 +1,8 @@
+编辑的ursina版本4.1.1如果无法启动，请执行以下命令:
+pip3 uninstall ursina
+pip3 install ursina==4.1.1
+启动游戏后，若中心点较大，请重新启动
+
 linux:sudo apt-get install python3-pip
 pip3 install ursina
 python>=3.6
