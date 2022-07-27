@@ -3,6 +3,7 @@
 参考:1.https://www.ursinaengine.org/documentation.html
      2.https://space.bilibili.com/391480368
      3.https://blog.csdn.net/cunchi4221/article/details/107475640
+     4.zhuanlan.zhihu.com/p/146189042
 编写软件:1.PyCharm Community for linux
         2.deepin文本编辑器
 编写系统:linux deepin20.5
