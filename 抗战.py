@@ -1,8 +1,6 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from random import randint
-cdpd=0
-cdhjd=0
 class PD(Entity):
     def __init__(self,speed=450,lifetime=20,**kwargs):
         super().__init__(**kwargs)
@@ -16,12 +14,14 @@ class PD(Entity):
             if self.rotation_x < 90:
                 self.rotation_x+=0.1
         else:
-            self.world_position += self.forward * self.speed * time.dt
+            self.world_position += self.forward * self.speed * time.dt * self.lifetime
             if self.y>3:
                 help_position = self.world_position-(0,2,0)
             else:
                 help_position = self.world_position
             destroy(self)
+            if help_position[1]<0:
+                help_position=(help_position[0],0.5,help_position[2])
             invoke(Audio, 'files/sound/boom.ogg')
             boom = Entity(model = 'cube',texture = 'files/image/boom.png',position = help_position)
             pdpd.position=help_position
@@ -59,7 +59,7 @@ class kt(Entity):
                         pdslhelp.x+=10
                     else:
                         pdslhelp.x=30
-                    if player.life<10:
+                    if player.life<20:
                         player.life+=1
                     destroy(self)
 class tk(Entity):
@@ -74,9 +74,25 @@ class tk(Entity):
         if self.rotation_y==180:
             if not (player.x-self.x>0 and player.x-self.x<10 and abs(self.z-player.z)<3):
                 self.x+=self.life/10
+            else:
+                self.time=random.randint(12,17)
+                self.look_at(player,axis='left')
+                invoke(Audio, 'files/sound/fs.ogg')
+                PD(model="files/3d/hjd.obj",
+                   scale=0.1,
+                   position=self.world_position+(0,2.5,0),
+                   rotation=self.world_rotation-(-89,90,0))
         if self.rotation_y==0:
             if not (self.x-player.x>0 and self.x-player.x<10 and abs(self.z-player.z)<3):
                 self.x-=self.life/10
+            else:
+                self.time=random.randint(12,17)
+                self.look_at(player,axis='left')
+                invoke(Audio, 'files/sound/fs.ogg')
+                PD(model="files/3d/hjd.obj",
+                   scale=0.1,
+                   position=self.world_position+(0,2.5,0),
+                   rotation=self.world_rotation-(-89,90,0))
         if self.x>130:
             self.rotation_y=0
         if self.x<-130:
@@ -144,6 +160,31 @@ class tk(Entity):
             self.rotation_y = 0
         if player.life==0:
             destroy(self)
+class fj(Entity):
+    def __init__(self,z,life=0.1):
+        super().__init__(model='files/3d/fj1.obj',collider='box',position=(-200,50,z))
+        self.life=life
+    def update(self):
+        self.x+=0.7
+        if self.x>200:
+            destroy(self,delay=0.5)
+        if self.life<0.1:
+            player.jif+=0.3
+            destroy(self,delay=0.5)
+        if abs(self.x-pdpd.x)<20:
+            if abs(self.z-pdpd.z)<20:
+                if abs(self.y-pdpd.y)<15:
+                    self.life-=0.1
+        if abs(self.x-hjdpd.x)<20:
+            if abs(self.z-hjdpd.z)<20:
+                if abs(self.y-hjdpd.y)<15:
+                    self.life-=0.1
+        if random.randint(1,10)==1 :
+            invoke(Audio, 'files/sound/fs.ogg')
+            PD(model="files/3d/hjd.obj",
+               scale=1,
+               position=self.world_position,
+               rotation=(90,0,0))
 def input(key):
     if key == "escape":
         quit()
@@ -223,7 +264,7 @@ def update():
         if hjdpd.rotation_z==0:
             hjdpd.y=-10
             hjdpd.rotation_z=0.1
-    player.speed=player.life
+    player.speed=player.life/2
     if player.life<0:
         player.life=0
     if abs(player.x-pdpd.x)<8:
@@ -262,6 +303,7 @@ def update():
         invoke(Audio, 'files/sound/fdj.ogg')
     if ctk.x==0:
         tk(z=random.randint(1,6)*45-130)
+        fj(z=player.z)
         ctk.x=10
     if ctk.x<0:
         ctk.x=0
@@ -275,7 +317,7 @@ def update():
         player.life=0
 app = Ursina()
 Sky()
-player = FirstPersonController(speed=10,scale=2.5,life=10,jif=0)
+player = FirstPersonController(speed=10,scale=2.5,life=20,jif=0)
 ground1 = Entity(model = 'cube',scale = (300,1,300),color = color.lime,texture = "td.png",texture_scale = (300,300),collider="box")
 wall1 = Entity(model = 'cube',scale = (300,8,1),color = color.white,texture = "sky.png",texture_scale = (300,8),collider = "box",position = (0,4,150))
 wall2 = Entity(model = 'cube',scale = (300,8,1),color = color.white,texture = "sky.png",texture_scale = (300,8),collider = "box",position = (0,4,-150))
@@ -288,7 +330,7 @@ cdhjdhelp = Entity(model = 'cube',position=(0,-5,0))
 pdslhelp = Entity(model = 'cube',position=(20,-5,0))
 kttime = Entity(model = 'cube',position=(0,-5,0))
 lifefz = Entity(model = 'cube',position=(0,-5,0))
-ctk = Entity(model = 'cube',position=(0,-5,0))
+ctk = Entity(model = 'cube',position=(1,-5,0))
 pdpd = Entity(model = 'cube',scale=0.01,position=(0,-10,0),rotation_z=0.1)
 hjdpd = Entity(model = 'cube',scale=0.01,position=(0,-10,0),rotation_z=0.1)
 cdp=Button(scale=(0.3,0.05),text_scale=3,text_color=color.white,text='text',position=(0.6,-0.4))
